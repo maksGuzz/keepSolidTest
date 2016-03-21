@@ -1,0 +1,4 @@
+build-*
+KeepSolidTodo/KeepSolidTodo.pro.*
+KeepSolidTodo/*.o
+KeepSolidTodo/*.autosave
