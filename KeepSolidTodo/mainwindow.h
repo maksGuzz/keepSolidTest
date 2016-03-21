@@ -15,6 +15,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void slSetStausBarText(QString text);
+    void slGetCredentials();
+
+private slots:
+    void on_actionConnect_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

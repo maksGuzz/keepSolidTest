@@ -1,3 +1,3 @@
 # keepSolidTest
 REQUIRED
-# sudo apt-get install libglu1-mesa-dev
+sudo apt-get install libglu1-mesa-dev
