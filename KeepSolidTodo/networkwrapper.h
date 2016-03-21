@@ -6,6 +6,7 @@
 class QString;
 class QNetworkAccessManager;
 class QNetworkReply;
+class QSslError;
 
 class NetworkWrapper : public QObject
 {
@@ -23,9 +24,14 @@ public slots:
     void slAuthenticate(QString login, QString pass);
 
 private slots:
-    void parseReply(QNetworkReply*);
+    void slParseReply(QNetworkReply*);
+    void slParseAuthReplay(QNetworkReply*reply);
+    void slSslError(QNetworkReply *reply, const QList<QSslError> &errors);
 private:
     QNetworkAccessManager *m_network;
+    QString m_login;
+    QString m_pwd;
+    QString m_authToken;
 };
 
 #endif // NETWORKWRAPPER_H

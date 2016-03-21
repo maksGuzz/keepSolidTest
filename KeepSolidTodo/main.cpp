@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     NetworkWrapper net;
 
-    QObject::connect(&net, SIGNAL(sigTextForStatusBar(QString&)), &w, SLOT(slSetStausBarText(QString&)));
+    QObject::connect(&net, SIGNAL(sigTextForStatusBar(QString)), &w, SLOT(slSetStausBarText(QString)));
     w.show();
 
     return a.exec();
