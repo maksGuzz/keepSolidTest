@@ -16,9 +16,10 @@ public:
     ~NetworkWrapper();
 
 signals:
-    void sigAuthRequired();
+    void sigUserCredentialsRequired();
     void sigTextForStatusBar(QString text);
     void sigTokenReady(QString token);
+
 
 public slots:
     void slAuthenticate(QString login, QString pass);

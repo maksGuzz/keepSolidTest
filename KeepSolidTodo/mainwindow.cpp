@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    emit sigLogin(QString(), QString());
 }
 
 
@@ -30,6 +31,11 @@ void MainWindow::slGetCredentials()
 {
     LoginDialog dialog(this);
     dialog.exec();
+}
+
+void MainWindow::slLoggedIn()
+{
+    qDebug() << "Logged In!";
 }
 
 
