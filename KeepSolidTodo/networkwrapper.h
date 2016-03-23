@@ -7,6 +7,8 @@ class QString;
 class QNetworkAccessManager;
 class QNetworkReply;
 class QSslError;
+class QNetworkProxy;
+class QAuthenticator;
 
 class NetworkWrapper : public QObject
 {
@@ -24,6 +26,9 @@ signals:
 public slots:
     void slAuthenticate(QString login, QString pass);
 
+    void authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
+    //void networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible);
+    void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 private slots:
     void slParseReply(QNetworkReply*);
     void slParseAuthReplay(QNetworkReply*reply);
