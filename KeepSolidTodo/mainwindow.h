@@ -7,6 +7,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class TreeModel;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -14,6 +16,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void setModel(TreeModel *model);
 
 public slots:
     void slSetStausBarText(QString text);
@@ -28,6 +31,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    TreeModel *m_tree;
 };
 
 #endif // MAINWINDOW_H

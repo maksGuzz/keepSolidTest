@@ -10,12 +10,12 @@ class QSslError;
 class QNetworkProxy;
 class QAuthenticator;
 
-class NetworkWrapper : public QObject
+class SolidAuth : public QObject
 {
     Q_OBJECT
 public:
-    explicit NetworkWrapper(QObject *parent = 0);
-    ~NetworkWrapper();
+    explicit SolidAuth(QObject *parent = 0);
+    ~SolidAuth();
 
 signals:
     void sigUserCredentialsRequired();
@@ -26,13 +26,13 @@ signals:
 public slots:
     void slAuthenticate(QString login, QString pass);
 
+
+private slots:
+    void slParseAuthReplay(QNetworkReply*reply);
+    void slSslError(QNetworkReply *reply, const QList<QSslError> &errors);
     void authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
     //void networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible);
     void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
-private slots:
-    void slParseReply(QNetworkReply*);
-    void slParseAuthReplay(QNetworkReply*reply);
-    void slSslError(QNetworkReply *reply, const QList<QSslError> &errors);
 private:
     QNetworkAccessManager *m_network;
     QString m_login;

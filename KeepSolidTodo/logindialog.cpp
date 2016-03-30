@@ -38,9 +38,11 @@ void LoginDialog::setupGui()
     QGridLayout *formGridLayout = new QGridLayout( this );
 
     m_editLogin = new QLineEdit( this );
-    m_editLogin->setEchoMode(QLineEdit::Normal);// QLineEdit::Password );
+    m_editLogin->setEchoMode(QLineEdit::Normal);
+    m_editLogin->setText("kscheck001@mailinator.com");
     m_editPassword = new QLineEdit( this );
     m_editPassword->setEchoMode(QLineEdit::Normal);// QLineEdit::Password );
+    m_editPassword->setText("123456");
 
     // initialize the labels
     QLabel *labelUsername = new QLabel( this );
