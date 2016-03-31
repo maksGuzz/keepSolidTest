@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QVariantMap>
 
 namespace Ui {
 class MainWindow;
@@ -28,6 +29,7 @@ signals:
 
 private slots:
     void on_actionConnect_triggered();
+    void setDetailsInfo(QVariantMap meta);
 
 private:
     Ui::MainWindow *ui;

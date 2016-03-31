@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1345</width>
-    <height>793</height>
+    <width>639</width>
+    <height>795</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,11 +19,11 @@
      <rect>
       <x>0</x>
       <y>-1</y>
-      <width>1351</width>
+      <width>641</width>
       <height>751</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,2">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,2">
      <property name="sizeConstraint">
       <enum>QLayout::SetMaximumSize</enum>
      </property>
@@ -43,18 +43,7 @@
       <widget class="QTreeView" name="treeView"/>
      </item>
      <item>
-      <widget class="QListWidget" name="listWidget">
-       <item>
-        <property name="text">
-         <string>New Item</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>New Item</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QListWidget" name="listWidget"/>
      </item>
     </layout>
    </widget>
@@ -64,7 +53,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1345</width>
+     <width>639</width>
      <height>25</height>
     </rect>
    </property>

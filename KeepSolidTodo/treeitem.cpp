@@ -43,6 +43,26 @@ TreeItem *TreeItem::parentItem()
     return m_parentItem;
 }
 
+void TreeItem::setMetaData(const QVariantMap &metadata)
+{
+    m_metadata = metadata;
+}
+
+QVariantMap TreeItem::getMetaData() const
+{
+    return m_metadata;
+}
+
+void TreeItem::setType(int type)
+{
+    m_type = type;
+}
+
+int TreeItem::getType() const
+{
+    return m_type;
+}
+
 int TreeItem::row() const
 {
     if (m_parentItem)

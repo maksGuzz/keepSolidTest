@@ -3,6 +3,8 @@
 
 #include <QStringList>
 #include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include "sendrcvjob.h"
 
@@ -89,7 +91,7 @@ void TreeModel::slJobFinished(SendRcvJob *job)
             delete job;
             return;
         }
-        qDebug() << resp.DebugString().c_str();
+        //qDebug() << resp.DebugString().c_str();
         //resp.ParseFromArray(job->m_response.data(), job->m_response.size());
 
         QString s = QString::fromStdString(resp.DebugString());
@@ -100,37 +102,91 @@ void TreeModel::slJobFinished(SendRcvJob *job)
         }
         else if(resp.error_code() == 200)
         {
+            // cleanup
+            /*delete rootItem;
+            rootItem = new TreeItem("ROOT");
+            resetInternalData();
+            emit layoutChanged();*/
             //parse
             if(resp.has_workgroups_list())
             {
+                QMap<QString, QVariantMap> lists, tasks;
                 rpc::WorkGroupsListResponse list = resp.workgroups_list();
                 int sz = list.workgroup_info_list_size();
                 for(int i = 0; i< sz; ++i)
                 {
                     rpc::WorkGroupInfo info = list.workgroup_info_list(i);
+
+                    QJsonDocument d = QJsonDocument::fromJson(info.workgroup_metadata().c_str());
+
+                    if(!d.isObject())
+                    {
+                        qDebug() << "something wrong with json ((";
+                        continue;
+                    }
+                    QVariantMap metadata = d.object().toVariantMap();
+                    //QString token = respmap.value("session", QString("")).toString();
+                    QString wgname = QString::fromStdString(info.workgroup_name());
+
                     if(info.workgroup_type() == 1001)//task
                     {
-                        qDebug() << "TASK";
-                        TreeItem *i = setupModelData( QString("-TASK- ") + QString::fromStdString(info.description()) + " ( " + QString::fromStdString(info.workgroup_name()) + " )" );
-                        setupModelData( QString::fromStdString(info.DebugString()), i );
+                        tasks[wgname] = metadata;
                     }
                     else if(info.workgroup_type() == 1002)//task list
                     {
+                        // check if list is empty
+                        if(lists.contains(wgname)) // then append
+                        {
+                            QVariantMap meta = lists[wgname];
+                            QVariantList tl = meta.value("tasks",QVariantList()).toList();
+                            QVariantList tl1 = metadata.value("tasks",QVariantList()).toList();
+                            tl<<tl1;
+                            meta["tasks"] = tl;
+                            lists[wgname] = meta;
+                        }
+                        else
+                        {
+                            lists[wgname] = metadata;
+                        }
 
-                        TreeItem *i = setupModelData( QString("-LIST- ") + QString::fromStdString(info.description()) + " ( " + QString::fromStdString(info.workgroup_name()) + " )" );
-                        setupModelData( QString::fromStdString(info.DebugString()), i );
                     }
-
-                    qDebug() << info.DebugString().c_str();
-
-
                 }
-
+                //iterate over lists and append tasks
+                foreach (QVariantMap t, lists)
+                {
+                    QString name = t.value("title", QString()).toString();
+                    if(name.isEmpty())
+                    {
+                        continue;
+                    }
+                    TreeItem *i = setupModelData( name );
+                    i->setType(1002);
+                    QVariantList tl = t.value("tasks",QVariantList()).toList();
+                    foreach (QVariant t, tl)
+                    {
+                        QString tid = t.toString();
+                        if(tid.isEmpty())
+                        {
+                            continue;
+                        }
+                        if(!tasks.contains(tid))
+                        {
+                            continue;
+                        }
+                        QVariantMap task = tasks[tid];
+                        QString tn = task.value("title",QString()).toString();
+                        TreeItem *t1 = setupModelData( tn, i );
+                        t1->setType(1001);
+                        t1->setMetaData(task);
+                    }
+                }
             }
             else
             {
                 qDebug() << "workGroupList is empty";
             }
+
+
         }
         else qDebug() << "UNHANDLED response";
     }
@@ -142,6 +198,26 @@ void TreeModel::setAuthToken(const QString &token)
     qDebug() << "setAuthToken" << token;
     m_authToken = token;
     dataQuery();
+}
+
+void TreeModel::activated(const QModelIndex &index)
+{
+    qDebug() << "=========ACTIVATED!===========" << index.data();
+    TreeItem* item = static_cast<TreeItem*>(index.internalPointer());
+    QVariantMap meta = item->getMetaData();
+    if(item->getType() == 1002)//list
+    {
+        qDebug() << "tasklist, only add new task";
+        meta.insert("type",QVariant(1002));
+    }
+    else
+    {
+        qDebug() << "task. parse and show. can delete, edit...";
+        meta.insert("type",QVariant(1001));
+    }
+
+    qDebug() << meta;
+    emit setInfo(meta);
 }
 
 

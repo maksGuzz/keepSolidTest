@@ -7,6 +7,7 @@
 #include <QInputDialog>
 #include <QDir>
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -26,6 +27,8 @@ void MainWindow::setModel(TreeModel *model)
 {
     ui->treeView->setModel(model);
     m_tree = model;
+    connect(ui->treeView, SIGNAL(pressed(QModelIndex)), m_tree, SLOT(activated(QModelIndex)));
+    connect(m_tree, SIGNAL(setInfo(QVariantMap)), this, SLOT(setDetailsInfo(QVariantMap)));
 }
 
 
@@ -56,4 +59,34 @@ void MainWindow::on_actionConnect_triggered()
     QString connTxt = "Connecting...";
     slSetStausBarText(connTxt);
     slGetCredentials();
+}
+
+QStringList parseMap(const QVariantMap &map)
+{
+    QStringList l;
+    foreach (QString k, map.keys())
+    {
+        qDebug() << "typename:" << map[k].typeName();
+        if(QString(map[k].typeName()) == "QVariantMap")
+        {
+            qDebug() << "recurse";
+            l << "--" + k;
+            l.append(parseMap(map[k].toMap()));
+        }
+        else
+        {
+            QString s = k + ": " + map[k].toString();
+            l << s;
+        }
+    }
+    return l;
+}
+
+
+void MainWindow::setDetailsInfo(QVariantMap meta)
+{
+    qDebug() << "update detailsinfo";
+    QListWidget *di = ui->listWidget;
+    di->clear();
+    di->addItems(parseMap(meta));
 }

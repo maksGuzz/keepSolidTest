@@ -34,10 +34,12 @@ public:
 signals:
     void getData(SendRcvJob *job);
     void sigGetToken();
+    void setInfo(QVariantMap meta);
 
 public slots:
     void slJobFinished(SendRcvJob *job);
     void setAuthToken(const QString &token);
+    void activated(const QModelIndex & index);
 
 private:
     TreeItem *rootItem;
